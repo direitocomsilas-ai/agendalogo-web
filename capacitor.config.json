@@ -1,0 +1,27 @@
+{
+  "appId": "com.agendez.app",
+  "appName": "Agenda Logo",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://agendezestetica.verdent.app",
+    "androidScheme": "https",
+    "iosScheme": "https"
+  },
+  "android": {
+    "backgroundColor": "#ffffff",
+    "allowMixedContent": false
+  },
+  "ios": {
+    "backgroundColor": "#ffffff",
+    "contentInset": "always"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "backgroundColor": "#059669",
+      "androidSplashResourceName": "splash",
+      "showSpinner": false
+    }
+  }
+}

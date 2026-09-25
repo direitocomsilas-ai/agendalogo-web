@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.agendalogo.app",
+    "sha256_cert_fingerprints": ["63:F9:03:CA:2D:83:3E:B2:E4:2D:45:10:D2:66:1C:1D:05:8A:E1:03:6F:CD:E0:8E:BB:CD:4F:DF:8C:55:23:27"]
+  }
+}]

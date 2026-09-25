@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#059669" />
+    <title>Agenda Logo — Agenda e Gestão</title>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/png" href="/icon-1024.png" />
+    <link rel="apple-touch-icon" href="/icon-1024.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Agenda Logo" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      // Recuperação automática de tela branca: se o bundle principal falhar
+      // ao carregar (cache antigo do PWA após um deploy), limpa os caches e
+      // recarrega uma única vez.
+      (function () {
+        var attempt = 0;
+        try { attempt = Number(sessionStorage.getItem('agendez_recover') || 0); } catch (e) {}
+        window.addEventListener('error', function (e) {
+          var t = e.target;
+          if (attempt < 1 && t && (t.tagName === 'SCRIPT' || t.tagName === 'LINK')) {
+            try { sessionStorage.setItem('agendez_recover', '1'); } catch (err) {}
+            if (window.caches && caches.keys) {
+              caches.keys().then(function (keys) {
+                Promise.all(keys.map(function (k) { return caches.delete(k); })).then(function () {
+                  location.reload();
+                });
+              });
+            } else {
+              location.reload();
+            }
+          }
+        }, true);
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
