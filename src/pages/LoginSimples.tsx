@@ -28,6 +28,7 @@ export default function LoginSimples() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [appleBusy, setAppleBusy] = useState(false);
 
   if (loading || userDataLoading) return null;
   if (session) return <Navigate to="/" replace />;
@@ -70,7 +71,6 @@ export default function LoginSimples() {
     });
   };
 
-  const [appleBusy, setAppleBusy] = useState(false);
   const apple = async () => {
     if (!agree) {
       setAgreeErr(true);
