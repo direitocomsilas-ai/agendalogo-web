@@ -3,10 +3,21 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { CalendarDays, Loader2, Lock } from 'lucide-react';
 import { useApp } from '../ctx/AppContext';
 import { auth, supabase } from '../lib/supabase';
+import { appleSignIn, isAppleAvailable } from '../lib/appleAuth';
 import { Button, Card, Input, cx } from '../components/ui';
 
-// No app nativo iOS não oferecemos login social (diretriz 4.8 da App Store) — apenas e-mail/senha.
+// App nativo iOS: login por e-mail/senha e Sign in with Apple nativo (a Apple
+// exige um login equivalente ao de terceiros — diretriz 4.8). O Google fica
+// apenas no navegador porque não funciona dentro do WebView do app.
 const isNativeApp = typeof navigator !== 'undefined' && /AgendaLogoApp/.test(navigator.userAgent);
+
+function AppleLogo({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+    </svg>
+  );
+}
 
 // Página de entrada direta — somente login, sem informações de marketing.
 export default function LoginSimples() {
@@ -57,6 +68,25 @@ export default function LoginSimples() {
       primaryColor: '#059669',
       initialView: 'signIn',
     });
+  };
+
+  const [appleBusy, setAppleBusy] = useState(false);
+  const apple = async () => {
+    if (!agree) {
+      setAgreeErr(true);
+      return;
+    }
+    setAgreeErr(false);
+    setAppleBusy(true);
+    setError('');
+    try {
+      await appleSignIn();
+      nav('/', { replace: true });
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro ao entrar com a Apple.');
+    } finally {
+      setAppleBusy(false);
+    }
   };
 
   return (
@@ -121,6 +151,18 @@ export default function LoginSimples() {
             {submitting && <Loader2 size={18} className="animate-spin" />}
             {submitting ? 'Entrando...' : 'Entrar'}
           </Button>
+          {isAppleAvailable() && (
+            <Button
+              type="button"
+              size="lg"
+              disabled={appleBusy}
+              onClick={apple}
+              className="bg-black text-white hover:bg-black/85 border border-black/80 flex items-center justify-center gap-2"
+            >
+              {appleBusy ? <Loader2 size={18} className="animate-spin" /> : <AppleLogo className="w-4.5 h-4.5" />}
+              {appleBusy ? 'Entrando...' : 'Entrar com a Apple'}
+            </Button>
+          )}
           {!isNativeApp && (
             <Button type="button" size="lg" variant="outline" onClick={google}>
               Entrar com Google
